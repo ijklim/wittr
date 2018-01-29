@@ -1,4 +1,4 @@
-node_modules
-build
-npm-debug.log
-pointless_change
+/node_modules
+/build
+*.log
+/.vscode

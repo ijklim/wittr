@@ -1,8 +1,8 @@
 # Wittr
 
-This is a silly little demo app for an offline-first course.
+This is a demo app for an offline-first course.
 
-You could run the app either using machine dependnecies, or using docker
+You could run the app either using machine dependencies, or using docker
 
 ## Running using local machine
 
