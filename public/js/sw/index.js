@@ -37,7 +37,7 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
   var requestUrl = new URL(event.request.url);
-
+// console.log(requestUrl.pathname);
   if (requestUrl.origin === location.origin) {
     if (requestUrl.pathname === '/') {
       event.respondWith(caches.match('/skeleton'));
@@ -47,8 +47,13 @@ self.addEventListener('fetch', function(event) {
       event.respondWith(servePhoto(event.request));
       return;
     }
+    
     // TODO: respond to avatar urls by responding with
     // the return value of serveAvatar(event.request)
+    if (requestUrl.pathname.startsWith('/avatars/')) {
+      event.respondWith(serveAvatar(event.request));
+      return;
+    }
   }
 
   event.respondWith(
@@ -71,6 +76,16 @@ function serveAvatar(request) {
   // to update the entry in the cache.
   //
   // Note that this is slightly different to servePhoto!
+  return caches.open(contentImgsCache).then(function(cache) {
+    return cache.match(storageUrl).then(function(cacheResponse) {
+      let networkResponse = fetch(request).then(function(networkResponse) {
+        if (networkResponse) cache.put(storageUrl, networkResponse.clone());
+        return networkResponse;
+      });
+
+      return cacheResponse || networkResponse;
+    })
+  });
 }
 
 function servePhoto(request) {
